@@ -3,8 +3,11 @@ from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 import json
 from flask import Flask
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app)
 
 def get_collection_volume(url):
     hdr = {"User-Agent": "Mozilla/5.0"}
@@ -18,21 +21,18 @@ def get_collection_volume(url):
     return html[volumeIndex+46:closingApprIndex]
 
 @app.route('/metaroyals_volume')
-@crossdomain(origin='*')
 def get_metaroyals_volume():
     MRVolume = get_collection_volume('https://opensea.io/collection/metablaze-metaroyals')
     MRRoyalties = float(MRVolume)*float(0.1*0.1)
     return '%f' % MRRoyalties
 
 @app.route('/metagoblins_volume')
-@crossdomain(origin='*')
 def get_metagoblins_volume():
     MGVolume = get_collection_volume('https://opensea.io/collection/metablaze-metagoblins')
     MGRoyalties = float(MGVolume)*float(0.1*0.1)
     return '%f' % MGRoyalties
 
 @app.route('/total_volume')
-@crossdomain(origin='*')
 def get_total_volume():
     MRRoyalties = get_metaroyals_volume()
     MGRoyalties = get_metagoblins_volume()
